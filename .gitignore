@@ -1,0 +1,5 @@
+.DS_Store
+
+# Local source and drafting files. The generated reading pages are published instead.
+*.md
+*.py
