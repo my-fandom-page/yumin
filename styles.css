@@ -184,6 +184,9 @@ a:focus-visible { outline: 2px solid var(--green); outline-offset: 5px; }
   transition: transform .2s ease, background .2s ease;
 }
 .featured-work:hover { transform: translateY(-3px); background: linear-gradient(135deg, rgba(165, 230, 187, .13), #121915 55%); }
+.featured-work + .featured-work { margin-top: 12px; }
+.garden-feature { border-color: var(--line); background: linear-gradient(155deg, var(--panel) 42%, rgba(165, 230, 187, .09)); }
+.garden-feature:hover { border-color: var(--green); background: linear-gradient(155deg, #121915 42%, rgba(165, 230, 187, .14)); }
 .work-index { color: var(--green); font-size: .72rem; letter-spacing: .11em; text-transform: uppercase; }
 .featured-work h3 { margin: 18px 0 24px; font-size: clamp(2.6rem, 6vw, 5.3rem); font-weight: 600; letter-spacing: -.065em; line-height: .92; }
 .featured-work h3 small { display: block; margin-top: 14px; color: var(--muted); font: 500 .27em/1.2 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; letter-spacing: .06em; }
