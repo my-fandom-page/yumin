@@ -7,9 +7,10 @@
   <meta name="theme-color" content="#070a08">
   <title>小径分岔的花园 · The Garden of Forking Paths｜豫敏</title>
   <script src="../theme.js?v=20260910-4"></script>
-  <link rel="stylesheet" href="styles.css?v=20260910-6">
+  <link rel="stylesheet" href="styles.css?v=20260910-7">
   <script defer src="../vendor/opencc-cn2t.min.js?v=1"></script>
   <script defer src="../script-toggle.js?v=2"></script>
+  <script defer src="route.js?v=1"></script>
 </head>
 <body>
   <header class="site-header">
@@ -43,15 +44,28 @@
           <div><small>ORIGIN</small><strong>花莲，雨</strong></div>
         </div>
         <div class="route-fork">
-          <div class="route-option dormant">
+          <button class="route-option dormant" type="button" aria-expanded="false" aria-controls="missed-route">
             <small>ONE POSSIBLE PATH</small>
             <strong>客运准时抵达</strong>
-            <span>她们彼此错过</span>
-          </div>
+            <span>她们彼此错过 →</span>
+          </button>
           <a class="route-option active" href="Chapter-1/">
             <small>THE WANTED PATH</small>
             <strong>那辆车倒回来</strong>
             <span>毛阿敏为她回头 →</span>
+          </a>
+        </div>
+        <div class="route-return" id="missed-route" hidden aria-live="polite">
+          <div class="route-return-head mono"><span>Another path, another time</span><span>1986—2026</span></div>
+          <p>这一条路上，她们没有在花莲相遇。很多年后，声音先到了。</p>
+          <ol class="route-timeline">
+            <li><small>1986 · 一盘磁带</small><span>齐豫的声音先一步抵达二十三岁的毛阿敏那里。</span></li>
+            <li><small>2019 · 两地之间</small><span>一束花先替她们越过距离。</span></li>
+            <li><small>2026 · 上海</small><span>电话响起。“帮谁？”——“齐豫老师。”</span></li>
+          </ol>
+          <a class="route-arrival" href="../After-the-Echo/">
+            <small>ANOTHER STORY BEGINS</small>
+            <strong>抵达《回声以后》 →</strong>
           </a>
         </div>
         <p class="route-caption mono">INFINITE FUTURES EXIST<br>SHE WANTS THE ONE WHERE THEY MEET</p>
@@ -65,22 +79,36 @@
     <section class="chapter-section" id="chapter">
       <div class="shell chapter-grid">
         <header>
-          <p class="kicker">Current path // 01</p>
+          <p class="kicker">Current path // 01—02</p>
           <h2>无数个以后。她只要这一个。</h2>
           <p>她知道没有遇见毛阿敏的人生也会照常继续，甚至不会知道自己应该遗憾。可知道了结果以后，她便再也不肯对其他可能一视同仁。</p>
         </header>
 
-        <a class="chapter-entry" href="Chapter-1/">
-          <div class="entry-top mono"><span>PATH 01</span><span>AVAILABLE NOW</span></div>
-          <div class="entry-body">
-            <div>
-              <h3>第一章</h3>
-              <p>一辆车驶过雨幕，又沿着湿漉漉的山路倒回来。她们从天气谈到田野，从陌生人的名字谈到一整袋没有顺序的录音带。</p>
+        <div class="chapter-list">
+          <a class="chapter-entry" href="Chapter-1/">
+            <div class="entry-top mono"><span>PATH 01</span><span>AVAILABLE NOW</span></div>
+            <div class="entry-body">
+              <div>
+                <h3>第一章</h3>
+                <p>一辆车驶过雨幕，又沿着湿漉漉的山路倒回来。她们从天气谈到田野，从陌生人的名字谈到一整袋没有顺序的录音带。</p>
+              </div>
+              <span class="entry-arrow" aria-hidden="true">↗</span>
             </div>
-            <span class="entry-arrow" aria-hidden="true">↗</span>
-          </div>
-          <div class="entry-route" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-        </a>
+            <div class="entry-route" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+          </a>
+
+          <a class="chapter-entry" href="Chapter-2/">
+            <div class="entry-top mono"><span>PATH 02</span><span>AVAILABLE NOW</span></div>
+            <div class="entry-body">
+              <div>
+                <h3>第二章</h3>
+                <p>雨停以后，她们沿山路慢慢走。齐豫教毛阿敏看取景器，毛阿敏把手伸给齐豫；最滑的石阶已经过去，那只手却一直没有松开。</p>
+              </div>
+              <span class="entry-arrow" aria-hidden="true">↗</span>
+            </div>
+            <div class="entry-route" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+          </a>
+        </div>
       </div>
     </section>
 
