@@ -1,4 +1,10 @@
 (() => {
+  const beacon = document.createElement("script");
+  beacon.async = true;
+  beacon.dataset.goatcounter = "https://fandom-page.goatcounter.com/count";
+  beacon.src = "https://gc.zgo.at/count.js";
+  document.head.appendChild(beacon);
+
   const root = document.documentElement;
   const storageKey = "site-theme";
   const systemTheme = window.matchMedia("(prefers-color-scheme: dark)");
