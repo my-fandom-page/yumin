@@ -251,6 +251,36 @@ footer a { color: var(--green); text-decoration: none; }
 .prose p { margin: 0 0 1.55em; }
 .prose strong { color: var(--green); font-weight: 550; }
 .prose hr { width: 90px; height: 28px; margin: 4.8rem auto; border: 0; background: linear-gradient(155deg, transparent 48%, var(--green-dark) 49%, var(--green-dark) 51%, transparent 52%); }
+.adult-gate { margin: 4.8rem 0; }
+.adult-gate-panel,
+.adult-content { position: relative; border: 1px solid var(--green-dark); background: linear-gradient(145deg, var(--green-faint), transparent 62%), var(--panel); }
+.adult-gate-panel { padding: clamp(24px, 5vw, 42px); overflow: hidden; }
+.adult-gate-panel::after { content: "18+"; position: absolute; right: -8px; bottom: -24px; color: var(--green-faint); font: 700 clamp(5.8rem, 18vw, 9rem)/1 var(--mono); letter-spacing: -.1em; pointer-events: none; }
+.adult-gate-meta,
+.adult-content-head { display: flex; align-items: center; justify-content: space-between; gap: 20px; color: var(--green); font: .62rem/1.4 var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+.adult-gate-meta span:last-child { color: var(--muted); }
+.adult-gate-panel h2 { position: relative; z-index: 1; margin: 42px 0 12px; font-size: clamp(2rem, 5.5vw, 3.5rem); font-weight: 580; letter-spacing: -.06em; line-height: 1; }
+.adult-gate-panel > p { position: relative; z-index: 1; margin: 0 0 30px; color: var(--muted); font-size: .9rem; }
+.adult-gate-form { position: relative; z-index: 1; max-width: 520px; }
+.adult-gate-form label { display: block; margin-bottom: 9px; color: var(--soft-text); font: .64rem/1.4 var(--mono); letter-spacing: .1em; text-transform: uppercase; }
+.adult-gate-controls { display: grid; grid-template-columns: minmax(0, 1fr) auto; }
+.adult-gate-controls input,
+.adult-gate-controls button,
+.adult-gate-open { min-height: 46px; border: 1px solid var(--green-dark); border-radius: 0; font: .72rem/1 var(--mono); }
+.adult-gate-controls input { min-width: 0; padding: 0 14px; border-right: 0; outline: none; background: var(--bg); color: var(--text); }
+.adult-gate-controls input:focus { border-color: var(--green); box-shadow: inset 0 0 0 1px var(--green); }
+.adult-gate-controls button,
+.adult-gate-open { padding: 0 18px; background: var(--green); color: var(--bg); cursor: pointer; letter-spacing: .06em; }
+.adult-gate-controls button:hover,
+.adult-gate-open:hover { background: var(--text); }
+.adult-gate-status { min-height: 1.5em; margin: 10px 0 0 !important; color: var(--muted); font: .66rem/1.5 var(--mono); }
+.adult-gate-open { position: relative; z-index: 1; margin-top: 10px; }
+.adult-gate-open span { margin-left: 12px; }
+.adult-content { padding: clamp(28px, 5vw, 48px); }
+.adult-content-head { margin: 0 0 38px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+.adult-content-head button { padding: 0; border: 0; background: none; color: var(--muted); font: inherit; letter-spacing: inherit; text-transform: inherit; cursor: pointer; }
+.adult-content-head button:hover { color: var(--green); }
+.adult-content > p:last-child { margin-bottom: 0; }
 .soundtrack { margin: 3.3rem 0 4rem; padding: 22px; border: 1px solid var(--line); background: var(--panel); }
 .soundtrack:first-child { margin-top: 0; }
 .soundtrack:last-child { margin-bottom: 0; }
@@ -313,6 +343,13 @@ footer a { color: var(--green); text-decoration: none; }
   footer a { display: inline-block; margin-top: 10px; }
   .chapter-main { padding: 58px 0 78px; }
   .prose { font-size: 18px; }
+  .adult-gate { margin-block: 3.8rem; }
+  .adult-gate-meta { align-items: flex-start; flex-direction: column; gap: 5px; }
+  .adult-gate-panel h2 { margin-top: 32px; }
+  .adult-gate-controls { grid-template-columns: 1fr; gap: 10px; }
+  .adult-gate-controls input { border-right: 1px solid var(--green-dark); }
+  .adult-gate-controls button { width: 100%; }
+  .adult-content-head { align-items: flex-start; flex-direction: column; gap: 8px; }
   .soundtrack { margin-block: 2.7rem 3.4rem; padding: 16px; }
   .soundtrack-head { display: block; }
   .soundtrack-head p { margin-top: 8px; text-align: left; }
