@@ -1,4 +1,8 @@
 (() => {
+  const reading = document.createElement("script");
+  reading.src = new URL("reading.js?v=20261114-4", document.currentScript.src);
+  document.head.appendChild(reading);
+
   const beacon = document.createElement("script");
   beacon.async = true;
   beacon.dataset.goatcounter = "https://fandom-page.goatcounter.com/count";

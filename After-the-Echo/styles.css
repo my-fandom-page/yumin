@@ -256,6 +256,7 @@ a:focus-visible { outline: 2px solid var(--green); outline-offset: 5px; }
 }
 
 .disclaimer { padding: 34px 0; border-top: 1px solid var(--line); color: var(--muted); font-size: .82rem; }
+.disclaimer > .shell { margin: 0 auto; }
 .disclaimer p { margin: 0; }
 
 /* Reading pages */
