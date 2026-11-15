@@ -4,7 +4,7 @@
   const assetURL = document.currentScript.src;
   const css = document.createElement("link");
   css.rel = "stylesheet";
-  css.href = new URL("reading.css?v=20261114-4", assetURL);
+  css.href = new URL("reading.css?v=20261114-6", assetURL);
   document.head.append(css);
   const SETTINGS = "fandom-reader:v1:settings";
   // Retire the old local bookmarks without touching typography preferences.
@@ -84,7 +84,7 @@
 
     body.classList.add("reading-enhanced");
     const head = document.querySelector(".chapter-head, .article-head");
-    const bottomNav = document.querySelector('nav.chapter-nav[aria-label="章节切换"]');
+    const bottomNav = document.querySelector("nav.chapter-nav");
     if (head && bottomNav && (garden || echo)) {
       const chapterNav = bottomNav.cloneNode(true);
       chapterNav.className = "reading-chapter-nav ignore-opencc";
@@ -96,10 +96,122 @@
         previous.replaceWith(blank);
       }
       const contents = chapterNav.querySelector(".home");
-      if (contents) contents.textContent = t("目录", "Contents");
+      if (contents) {
+        const directoryURL = new URL(contents.href, location.href);
+        directoryURL.hash = "";
+        const picker = make("details", "reading-chapter-picker");
+        const summary = make("summary");
+        summary.append(make("span", "", t("目录", "Contents")), make("span", "reading-chapter-chevron", "⌄"));
+        summary.lastElementChild.setAttribute("aria-hidden", "true");
+        summary.setAttribute("aria-controls", "reading-chapters-panel");
+        const panel = make("div", "reading-chapters-panel");
+        panel.id = "reading-chapters-panel";
+        panel.append(make("p", "reading-chapters-heading", t("选择章节", "Choose a chapter")));
+        const status = make("p", "reading-chapters-status");
+        status.setAttribute("role", "status");
+        const list = make("ol", "reading-chapters-list");
+        list.setAttribute("aria-label", t("全部章节", "All chapters"));
+        const retry = make("button", "reading-chapters-retry", t("重试", "Retry"));
+        retry.type = "button";
+        retry.hidden = true;
+        const home = contents.cloneNode(true);
+        home.className = "home reading-chapters-home";
+        home.textContent = t("返回作品主页 →", "Story homepage →");
+        panel.append(status, list, retry, home);
+        picker.append(summary, panel);
+        contents.replaceWith(picker);
+
+        let loaded = false;
+        let loading = false;
+        async function loadChapters() {
+          if (loaded || loading) return;
+          loading = true;
+          status.hidden = false;
+          status.textContent = t("正在读取章节…", "Loading chapters…");
+          retry.hidden = true;
+          list.setAttribute("aria-busy", "true");
+          translateUI();
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), 10000);
+          try {
+            const response = await fetch(directoryURL.href, { cache: "no-cache", signal: controller.signal });
+            if (!response.ok) throw new Error("Chapter index unavailable");
+            const source = new DOMParser().parseFromString(await response.text(), "text/html");
+            const entries = [];
+            const seen = new Set();
+            for (const link of source.querySelectorAll("#chapters a[href], #chapter a[href]")) {
+              const url = new URL(link.getAttribute("href"), directoryURL);
+              if (url.origin !== directoryURL.origin || !url.pathname.startsWith(directoryURL.pathname)) continue;
+              const child = url.pathname.slice(directoryURL.pathname.length);
+              if (!/^(?:Chapter-\d+|Afterword)\/(?:index\.html)?$/.test(child)) continue;
+              const key = canonical(url.pathname);
+              if (seen.has(key)) continue;
+              seen.add(key);
+              const title = link.querySelector(".log-title, h3")?.textContent.trim();
+              if (!title) continue;
+              const item = make("li");
+              const chapter = make("a", "reading-chapter-link");
+              chapter.href = url.href;
+              chapter.append(make("span", "", title));
+              if (key === path) {
+                chapter.setAttribute("aria-current", "page");
+                const current = make("small", "", t("正在读", "Reading"));
+                current.setAttribute("aria-hidden", "true");
+                chapter.append(current);
+              }
+              item.append(chapter);
+              entries.push(item);
+            }
+            if (!entries.length) throw new Error("No published chapters found");
+            list.replaceChildren(...entries);
+            loaded = true;
+            status.hidden = true;
+          } catch (_) {
+            status.textContent = t("暂时读不到目录，可以重试或返回作品主页。", "The index is unavailable. Retry or visit the story homepage.");
+            retry.hidden = false;
+          } finally {
+            clearTimeout(timeout);
+            loading = false;
+            list.removeAttribute("aria-busy");
+            translateUI();
+          }
+        }
+        picker.addEventListener("toggle", async () => {
+          if (!picker.open) return;
+          await loadChapters();
+          const current = list.querySelector('[aria-current="page"]');
+          if (picker.open && current) {
+            list.scrollTop = Math.max(0, current.offsetTop - list.offsetTop - (list.clientHeight - current.offsetHeight) / 2);
+          }
+        });
+        retry.addEventListener("click", loadChapters);
+        picker.addEventListener("click", event => {
+          if (event.target.closest("a")) picker.open = false;
+        });
+        document.addEventListener("click", event => {
+          if (picker.open && !picker.contains(event.target)) picker.open = false;
+        });
+        document.addEventListener("keydown", event => {
+          if (event.key === "Escape" && picker.open) {
+            picker.open = false;
+            summary.focus();
+          }
+        });
+        picker.addEventListener("focusout", event => {
+          if (event.relatedTarget && !picker.contains(event.relatedTarget)) picker.open = false;
+        });
+      }
       const pendingChapter = chapterNav.querySelector(".locked");
       if (pendingChapter) pendingChapter.textContent = t("待续", "To be continued");
       head.before(chapterNav);
+      // The saved script may have converted the source nav before we cloned it.
+      // Keep prev/next labels in sync when the original page is restored.
+      window.addEventListener("site-script-change", () => {
+        for (const link of chapterNav.querySelectorAll(":scope > a")) {
+          const original = [...bottomNav.querySelectorAll("a")].find(item => item.href === link.href);
+          if (original) link.textContent = original.textContent;
+        }
+      });
     }
     if (head && (garden || sketch)) {
       const folio = make("div", "reading-folio");
@@ -259,9 +371,9 @@
       setPanel(false);
       manuallyCollapsed = false;
       setCollapsed(false);
-      const destination = document.querySelector(".reading-chapter-nav a, .chapter-head h1, .article-head h1");
+      const destination = document.querySelector(".reading-chapter-nav > a, .reading-chapter-nav summary, .chapter-head h1, .article-head h1");
       if (destination) {
-        if (!destination.matches("a")) destination.setAttribute("tabindex", "-1");
+        if (!destination.matches("a, summary")) destination.setAttribute("tabindex", "-1");
         destination.focus({ preventScroll: true });
       }
       const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
@@ -276,23 +388,44 @@
     panel.setAttribute("aria-label", t("阅读设置", "Reading settings"));
     const panelHead = make("div", "reading-settings-head");
     panelHead.append(make("strong", "", t("阅读设置", "Reading settings")));
-    const close = button(t("收起 ↓", "Close ↓"), t("收起阅读设置", "Close reading settings"));
+    const close = button("×", t("收起阅读设置", "Close reading settings"));
     panelHead.append(close); panel.append(panelHead);
     const inputs = [];
     function slider(label, prop, min, max, step, suffix) {
-      const field = make("label", "reading-setting");
-      const row = make("span", "reading-setting-label");
+      const field = make("div", "reading-setting");
+      const row = make("div", "reading-setting-label");
+      const name = make("label", "", label);
       const output = make("output");
       const input = make("input");
       input.type = "range"; input.min = min; input.max = max; input.step = step;
-      input.id = "reading-" + prop; output.htmlFor = input.id;
-      field.htmlFor = input.id;
+      input.id = "reading-" + prop; output.htmlFor = input.id; name.htmlFor = input.id;
+      const controls = make("div", "reading-setting-controls");
+      const less = button("−", prop === "size" ? t("缩小字号", "Decrease text size") : t("减小行距", "Decrease line spacing"));
+      const more = button("+", prop === "size" ? t("放大字号", "Increase text size") : t("增大行距", "Increase line spacing"));
+      less.classList.add("reading-step"); more.classList.add("reading-step");
+      less.dataset.step = "-1"; more.dataset.step = "1";
+      less.setAttribute("aria-controls", input.id); more.setAttribute("aria-controls", input.id);
+      function value() {
+        const raw = Number.isFinite(settings[prop]) ? settings[prop] : defaults[prop];
+        const bounded = clamp(Number.isFinite(raw) ? raw : min, min, max);
+        return Number((min + Math.round((bounded - min) / step) * step).toFixed(2));
+      }
       const render = () => {
-        input.value = settings[prop] ?? defaults[prop];
-        output.value = (prop === "line" ? Number(input.value).toFixed(1) : input.value) + suffix;
+        input.value = value();
+        output.value = (prop === "line" ? value().toFixed(1) : String(value())) + suffix;
+        less.disabled = value() <= min;
+        more.disabled = value() >= max;
       };
-      row.append(make("span", "", label), output); field.append(row, input); panel.append(field);
-      input.addEventListener("input", () => { settings[prop] = Number(input.value); applySettings(); render(); write(SETTINGS, settings); });
+      function update(next) {
+        // Round to the range's step so repeated taps never accumulate decimal error.
+        settings[prop] = Number(clamp(min + Math.round((next - min) / step) * step, min, max).toFixed(2));
+        applySettings(); render(); write(SETTINGS, settings);
+      }
+      input.addEventListener("input", () => update(Number(input.value)));
+      less.addEventListener("click", () => update(value() - step));
+      more.addEventListener("click", () => update(value() + step));
+      row.append(name, output); controls.append(less, input, more);
+      field.append(row, controls); panel.append(field);
       inputs.push(render); render();
     }
     slider(t("字号", "Text size"), "size", 16, 28, 1, " px");
