@@ -201,8 +201,12 @@
           if (event.relatedTarget && !picker.contains(event.relatedTarget)) picker.open = false;
         });
       }
-      const pendingChapter = chapterNav.querySelector(".locked");
-      if (pendingChapter) pendingChapter.textContent = t("待续", "To be continued");
+      const chapterEnding = chapterNav.querySelector(".locked");
+      if (chapterEnding) {
+        const complete = chapterEnding.classList.contains("complete") ||
+          chapterEnding.textContent.trim() === "全文完";
+        chapterEnding.textContent = complete ? t("全文完", "Complete") : t("待续", "To be continued");
+      }
       head.before(chapterNav);
       // The saved script may have converted the source nav before we cloned it.
       // Keep prev/next labels in sync when the original page is restored.

@@ -1,6 +1,6 @@
 (() => {
   const reading = document.createElement("script");
-  reading.src = new URL("reading.js?v=20261114-6", document.currentScript.src);
+  reading.src = new URL("reading.js?v=20261115-1", document.currentScript.src);
   document.head.appendChild(reading);
 
   const beacon = document.createElement("script");
